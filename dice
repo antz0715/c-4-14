@@ -1,0 +1,41 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class DiceSpawner : MonoBehaviour
+{
+    public GameObject dicePrefab; // Drag your dice prefab here in the inspector
+    public Slider spawnSlider; // Assign the slider here in the inspector
+    private int lastSpawnCount = 0;
+
+    void Start()
+    {
+        spawnSlider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
+    }
+
+    public void ValueChangeCheck()
+    {
+        // This function is called every time the slider value changes
+        int currentCount = Mathf.FloorToInt(spawnSlider.value);
+        if (Input.GetMouseButtonUp(0)) // Checks if the mouse button is released
+        {
+            if (currentCount != lastSpawnCount)
+            {
+                SpawnDice(currentCount);
+                lastSpawnCount = currentCount;
+            }
+        }
+    }
+
+    void SpawnDice(int count)
+    {
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject); // Destroy all current dice
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            Instantiate(dicePrefab, new Vector3(i * 1.5f, 0, 0), Quaternion.identity, transform);
+        }
+    }
+}
